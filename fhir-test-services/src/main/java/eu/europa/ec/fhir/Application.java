@@ -4,8 +4,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.imec.ivlab.ehealth.automation.PseudonymizationApp;
 
-import java.io.File;
-
 /**
  * Entry point to bootstrap the application.
  */
@@ -18,7 +16,7 @@ public class Application {
      * @param args Runtime arguments (none expected).
      */
     public static void main(String[] args) {
-        new  PseudonymizationApp().run(args);
+//        new  PseudonymizationApp().run(args)
         SpringApplication.run(Application.class, args);
 
     }

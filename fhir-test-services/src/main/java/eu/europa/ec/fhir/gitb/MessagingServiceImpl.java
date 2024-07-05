@@ -14,6 +14,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+import org.imec.ivlab.ehealth.automation.PseudonymGenerator;
 
 /**
  * Implementation of the GITB messaging API to handle messaging calls.
@@ -32,6 +37,7 @@ public class MessagingServiceImpl implements MessagingService {
     private FhirClient fhirClient;
     @Autowired
     private Utils utils;
+
 
     /**
      * This method normally returns documentation on how the service is expected to be used. It is meaningful
@@ -107,6 +113,7 @@ public class MessagingServiceImpl implements MessagingService {
         } else {
             throw new IllegalArgumentException("Unsupported type [%s] for 'send' operation.".formatted(type));
         }
+
         return response;
     }
 
@@ -126,8 +133,34 @@ public class MessagingServiceImpl implements MessagingService {
     public Void receive(ReceiveRequest receiveRequest) {
         LOG.info("Called 'receive' from test session [{}].", receiveRequest.getSessionId());
         var type = utils.getRequiredString(receiveRequest.getInput(), "type");
+        
+
         if ("postToValidate".equals(type)) {
             var expectedPatient = utils.getRequiredString(receiveRequest.getInput(), "patient");
+            System.out.println("Received patient info (from test case): [{}]: " + expectedPatient);
+            LOG.info("Received patient info (from test case): [{}]:.", expectedPatient);
+
+            //TODO: wrap to a funciton
+            //Configurations for the psedonym services
+            String configFilePath = "resources/config.properties";
+            String certificateFilePath = null; // Placeholder, should be provided
+            //load configuration files
+            Properties config = new Properties();
+            try (FileInputStream input = new FileInputStream(configFilePath)) {
+                config.load(input);
+            } catch (IOException e) {
+                LOG.info("Config file not found at specified location. Using default values.");
+            }
+            certificateFilePath = config.getProperty("certificateFilePath", certificateFilePath);
+            PseudonymGenerator generator = new PseudonymGenerator();
+            if (certificateFilePath != null) {
+                System.out.println(certificateFilePath);
+                File certificateFile = new File(certificateFilePath);
+                expectedPatient = generator.generatePseudonym(certificateFile);
+                LOG.info("Pseudonymised patient info : [{}]:. " + expectedPatient);
+            } else {
+                LOG.info("Either base64EncodedString or certificateFilePath must be provided.");
+            }
             stateManager.recordExpectedPost(new ExpectedPost(
                     receiveRequest.getSessionId(),
                     // The call ID distinguishes the specific "receive" step that triggered this. This is useful if we have "parallel" receive steps to distinguish between them.
