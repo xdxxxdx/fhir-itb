@@ -5,3 +5,5 @@ services:
     build:
       context: .
     restart: unless-stopped
+    volumes:
+      - ./resources:/app/resources
