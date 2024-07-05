@@ -1,4 +1,4 @@
-- install local jar dependency to mvn 
+- install local jar dependency to mvn  (local runtime)
 
 ```
 mvn install:install-file -Dfile=vas-integrations-pseudonymisation-0.8.0-SNAPSHOT-jar-with-dependencies.jar -DgroupId=be.smals.vas.integrations -DartifactId=vas-integrations-pseudonymisation -Dversion=0.8.0-SNAPSHOT -Dpackaging=jar
