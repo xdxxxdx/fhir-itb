@@ -62,6 +62,7 @@
             <receive id="receiveAllergy" desc="Submit allergy" from="client" to="server" handler="$DOMAIN{messagingServiceAddress}">
                 <input name="type">"postToValidate"</input>
                 <input name="patient">"Patient/example"</input>
+                <input name="configFilePath">"resources/config.properties"</input>
             </receive>
             <!-- 
                 This is a nice example of requesting inputs from the user during the test (a screenshot in this case).
