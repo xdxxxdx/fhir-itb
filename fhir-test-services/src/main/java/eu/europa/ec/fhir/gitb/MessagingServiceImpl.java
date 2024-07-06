@@ -138,7 +138,9 @@ public class MessagingServiceImpl implements MessagingService {
             //configured patient path (by default should be "resources/config.properties")
             //this parameter also can be feed by testbed test case
             var configFilePath = utils.getRequiredString(receiveRequest.getInput(), "configFilePath");
+            //var configFilePath = "resources/config.properties";
             LOG.info("Received patient info (from test case): [{}]:.", expectedPatient);
+            LOG.info("Received config file path (from test case): [{}]:.", configFilePath);
             // call peutonymization handler to generate pseudonym
             expectedPatient =  new PseudonymizationHandler().pseudoGenerator(configFilePath);
             stateManager.recordExpectedPost(new ExpectedPost(
