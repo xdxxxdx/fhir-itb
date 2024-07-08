@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
+import eu.europa.ec.fhir.handlers.PseudonymizationHandler;
+
 
 /**
  * Implementation of the GITB messaging API to handle messaging calls.
@@ -32,6 +34,7 @@ public class MessagingServiceImpl implements MessagingService {
     private FhirClient fhirClient;
     @Autowired
     private Utils utils;
+
 
     /**
      * This method normally returns documentation on how the service is expected to be used. It is meaningful
@@ -107,6 +110,7 @@ public class MessagingServiceImpl implements MessagingService {
         } else {
             throw new IllegalArgumentException("Unsupported type [%s] for 'send' operation.".formatted(type));
         }
+
         return response;
     }
 
@@ -126,8 +130,19 @@ public class MessagingServiceImpl implements MessagingService {
     public Void receive(ReceiveRequest receiveRequest) {
         LOG.info("Called 'receive' from test session [{}].", receiveRequest.getSessionId());
         var type = utils.getRequiredString(receiveRequest.getInput(), "type");
+        
+
         if ("postToValidate".equals(type)) {
             var expectedPatient = utils.getRequiredString(receiveRequest.getInput(), "patient");
+            System.out.println("Received patient info (from test case): [{}]: " + expectedPatient);
+            //configured patient path (by default should be "resources/config.properties")
+            //this parameter also can be feed by testbed test case
+            var configFilePath = utils.getRequiredString(receiveRequest.getInput(), "configFilePath");
+            //var configFilePath = "resources/config.properties";
+            LOG.info("Received patient info (from test case): [{}]:.", expectedPatient);
+            LOG.info("Received config file path (from test case): [{}]:.", configFilePath);
+            // call peutonymization handler to generate pseudonym
+            expectedPatient =  new PseudonymizationHandler().pseudoGenerator(configFilePath);
             stateManager.recordExpectedPost(new ExpectedPost(
                     receiveRequest.getSessionId(),
                     // The call ID distinguishes the specific "receive" step that triggered this. This is useful if we have "parallel" receive steps to distinguish between them.

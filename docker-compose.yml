@@ -76,6 +76,8 @@ services:
     restart: unless-stopped
     ports:
       - "9002:8181"
+    volumes:
+      - ./fhir-test-services/resources:/app/resources
   fhir-server:
     # This is the internal FHIR server that is used by the Test Bed to validate FHIR client test cases. It has no host port mappings 
     # as this is only expected to be used by the test engine directly.
