@@ -48,13 +48,22 @@ public class ProcessingServiceImpl implements ProcessingService {
         }
         if ("pseudonymisation".equals(operation)) {
             // Get the expected inputs.
-            var SSIN = utils.getRequiredString(processRequest.getInput(), "SSIN");
+            var ssin = utils.getRequiredString(processRequest.getInput(), "SSIN");
             var configFilePath = utils.getRequiredString(processRequest.getInput(), "configFilePath");
             //var configFilePath = "resources/config.properties";
-            LOG.info("Received SSIN info (from test case): [{}]:.", SSIN);
-            LOG.info("Received config file path (from test case): [{}]:.", configFilePath);
+            LOG.info(String.format("Received SSIN info (from test case): [%s]" , ssin));
+            LOG.info(String.format("Received config file path (from test case): [%s].", configFilePath));
+            System.out.println(ssin.isBlank());
+            String pseudominizedPatient;
             // call pseudominization handler to generate pseudonym
-            String pseudominizedPatient =  new PseudonymizationHandler().pseudoGenerator(configFilePath);
+            if (!ssin.isBlank()) {
+                LOG.info(String.format("Pseudonymisation operation started for SSIN number: [%s].", ssin));
+                pseudominizedPatient =  new PseudonymizationHandler().pseudoGenerator(configFilePath, ssin);
+            } else {
+                LOG.info("Pseudonymisation operation started for default SSIN number: \"84072536717\".");
+                pseudominizedPatient =  new PseudonymizationHandler().pseudoGenerator(configFilePath, ssin);
+            }
+
             // Produce the resulting report.
             response.getOutput().add(utils.createAnyContentSimple("result",pseudominizedPatient, ValueEmbeddingEnumeration.STRING));
         }

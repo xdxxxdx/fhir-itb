@@ -71,7 +71,7 @@
         <dependency>
             <groupId>be.smals.vas.integrations</groupId>
             <artifactId>vas-integrations-pseudonymisation</artifactId>
-            <version>0.8.0-SNAPSHOT</version>
+            <version>0.8.2-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

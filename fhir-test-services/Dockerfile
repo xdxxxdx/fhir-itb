@@ -5,10 +5,10 @@ WORKDIR /app
 COPY . /app
 # Install the local dependency JAR into the Maven repository
 RUN mvn install:install-file \
-    -Dfile=lib/vas-integrations-pseudonymisation-0.8.0-SNAPSHOT-jar-with-dependencies.jar \
+    -Dfile=lib/vas-integrations-pseudonymisation-0.8.2-SNAPSHOT-jar-with-dependencies.jar \
     -DgroupId=be.smals.vas.integrations \
     -DartifactId=vas-integrations-pseudonymisation \
-    -Dversion=0.8.0-SNAPSHOT \
+    -Dversion=0.8.2-SNAPSHOT \
     -Dpackaging=jar
 
 RUN mvn clean install -DskipTests=true
