@@ -59,10 +59,15 @@
                 See also here how we refer to a domain configuration parameter to retrieve the value of the "handler" attribute (the WSDL address of the
                 service to handle the step).
             -->
+
+            <process desc="pseudonymisation process for patient" output="patient" handler="$DOMAIN{processingServiceAddress}" operation="pseudonymisation">
+                <input name="configFilePath">"resources/config.properties"</input>
+                <input name="SSIN">"Patient/example"</input>
+            </process>
+
             <receive id="receiveAllergy" desc="Submit allergy" from="client" to="server" handler="$DOMAIN{messagingServiceAddress}">
                 <input name="type">"postToValidate"</input>
-                <input name="patient">"Patient/example"</input>
-                <input name="configFilePath">"resources/config.properties"</input>
+                <input name="patient">$patient</input>
             </receive>
             <!-- 
                 This is a nice example of requesting inputs from the user during the test (a screenshot in this case).
