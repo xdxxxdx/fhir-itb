@@ -5,8 +5,12 @@ import com.gitb.ps.*;
 import com.gitb.tr.TestResultType;
 import eu.europa.ec.fhir.state.StateManager;
 import eu.europa.ec.fhir.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import eu.europa.ec.fhir.handlers.PseudonymizationHandler;
+import com.gitb.core.ValueEmbeddingEnumeration;
 
 /**
  * Implementation of the GITB messaging API to handle messaging calls.
@@ -18,6 +22,8 @@ public class ProcessingServiceImpl implements ProcessingService {
     private StateManager stateManager;
     @Autowired
     private Utils utils;
+    /** Logger. */
+    private static final Logger LOG = LoggerFactory.getLogger(MessagingServiceImpl.class);
 
     @Override
     public GetModuleDefinitionResponse getModuleDefinition(Void aVoid) {
@@ -36,10 +42,23 @@ public class ProcessingServiceImpl implements ProcessingService {
     @Override
     public ProcessResponse process(ProcessRequest processRequest) {
         String operation = processRequest.getOperation();
+        var response = new ProcessResponse();
         if ("init".equals(operation)) {
             stateManager.recordConfiguration(utils.getRequiredString(processRequest.getInput(), "endpoint"));
         }
-        var response = new ProcessResponse();
+        if ("pseudonymisation".equals(operation)) {
+            // Get the expected inputs.
+            var SSIN = utils.getRequiredString(processRequest.getInput(), "SSIN");
+            var configFilePath = utils.getRequiredString(processRequest.getInput(), "configFilePath");
+            //var configFilePath = "resources/config.properties";
+            LOG.info("Received SSIN info (from test case): [{}]:.", SSIN);
+            LOG.info("Received config file path (from test case): [{}]:.", configFilePath);
+            // call pseudominization handler to generate pseudonym
+            String pseudominizedPatient =  new PseudonymizationHandler().pseudoGenerator(configFilePath);
+            // Produce the resulting report.
+            response.getOutput().add(utils.createAnyContentSimple("result",pseudominizedPatient, ValueEmbeddingEnumeration.STRING));
+        }
+
         response.setReport(utils.createReport(TestResultType.SUCCESS));
         return response;
     }
