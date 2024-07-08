@@ -62,7 +62,7 @@
 
             <process desc="pseudonymisation process for patient" output="patient" handler="$DOMAIN{processingServiceAddress}" operation="pseudonymisation">
                 <input name="configFilePath">"resources/config.properties"</input>
-                <input name="SSIN">"Patient/example"</input>
+                <input name="SSIN">""</input>
             </process>
 
             <receive id="receiveAllergy" desc="Submit allergy" from="client" to="server" handler="$DOMAIN{messagingServiceAddress}">

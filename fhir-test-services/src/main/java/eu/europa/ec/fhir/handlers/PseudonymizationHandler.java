@@ -35,7 +35,7 @@ public class PseudonymizationHandler{
         *
         * @param configFilePath The path to the configuration file.  The configuFilePath can be feed by testbed test case.
         */
-       public String pseudoGenerator(String configFilePath) {
+       public String pseudoGenerator(String configFilePath, String ssin) {
            String certificateFilePath = null; // Placeholder, should be provided
            String expectedPatient = null;
            // Load configuration files
@@ -50,8 +50,8 @@ public class PseudonymizationHandler{
            if (certificateFilePath != null) {
                System.out.println(certificateFilePath);
                File certificateFile = new File(certificateFilePath);
-                expectedPatient = generator.generatePseudonym(certificateFile);
-               LOG.info("Pseudonymised patient info : [{}]:. " + expectedPatient);
+                expectedPatient = generator.generatePseudonym(certificateFile,ssin);
+               LOG.info(String.format("Pseudonymised patient info : [%s]:. ", expectedPatient));
            } else {
                LOG.info("Either base64EncodedString or certificateFilePath must be provided.");
            }
