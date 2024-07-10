@@ -27,12 +27,20 @@
                 you can either define an ID for the step (that will be used to name an output map) or define the "output"
                 attribute (which is more clear).
             -->
+
+
+            <process desc="pseudonymisation process for patient" output="patient" handler="$DOMAIN{processingServiceAddress}" operation="pseudonymisation">
+                <input name="configFilePath">"resources/config.properties"</input>
+                <input name="SSIN">"87051423939"</input>
+            </process>
+
+
             <call path="scriptlets/registerAllergy.xml" output="registeredIdentifier1">
                 <input name="codeCode">$code1</input>
                 <input name="codeDisplay">"Peanut (substance)"</input>
                 <input name="codeText">"Allergic to peanut"</input>
                 <input name="reactionCode">"39579001"</input>
-                <input name="reactionDisplay">"Anaphylactic reaction"</input>
+                <input name="reactionDisplay">$patient</input>
             </call>
         </group>
         <group id="secondAllergy" title="Step 2" desc="Submit second allergy">
