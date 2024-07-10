@@ -53,7 +53,6 @@ public class ProcessingServiceImpl implements ProcessingService {
             //var configFilePath = "resources/config.properties";
             LOG.info(String.format("Received SSIN info (from test case): [%s]" , ssin));
             LOG.info(String.format("Received config file path (from test case): [%s].", configFilePath));
-            System.out.println(ssin.isBlank());
             String pseudominizedPatient;
             // call pseudominization handler to generate pseudonym
             if (!ssin.isBlank()) {
