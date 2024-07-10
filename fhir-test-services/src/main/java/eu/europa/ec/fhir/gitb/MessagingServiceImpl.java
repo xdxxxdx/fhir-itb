@@ -133,7 +133,7 @@ public class MessagingServiceImpl implements MessagingService {
 
         if ("postToValidate".equals(type)) {
             var expectedPatient = utils.getRequiredString(receiveRequest.getInput(), "patient");
-            LOG.info("Received patient info (from test case): [{%s}]: " + expectedPatient);
+            LOG.info(String.format("Received patient info (from test case): [{%s}]: ",expectedPatient));
             stateManager.recordExpectedPost(new ExpectedPost(
                     receiveRequest.getSessionId(),
                     // The call ID distinguishes the specific "receive" step that triggered this. This is useful if we have "parallel" receive steps to distinguish between them.
